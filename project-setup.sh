@@ -3,6 +3,7 @@
 
 # setup
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+
 # get the project number. don't know why this is so cumbersome
 PROJECT_NUMBER=$(gcloud projects list \
     --filter="$(gcloud config get-value project)" \

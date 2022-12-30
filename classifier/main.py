@@ -22,7 +22,7 @@ from broker_utils.types import AlertIds
 from broker_utils.schema_maps import load_schema_map, get_value
 from broker_utils.data_utils import open_alert
 
-from flask import Flask, request
+from flask import Flask, request    
 
 
 PROJECT_ID = os.getenv("GCP_PROJECT")
@@ -54,39 +54,36 @@ model_path = Path(__file__).resolve().parent / f"{model_dir_name}/{model_file_na
 
 app = Flask(__name__)
 @app.route("/", methods=["POST"])
-def run(msg: dict, context) -> None:
+def index():
     """Classify alert with SuperNNova; publish and store results.
 
-    For args descriptions, see:
-    https://cloud.google.com/functions/docs/writing/background#function_parameters
-
-    This function is intended to be triggered by Pub/Sub messages, via Cloud Functions.
-
-    Args:
-        msg: Pub/Sub message data and attributes.
-            `data` field contains the message data in a base64-encoded string.
-            `attributes` field contains the message's custom attributes in a dict.
-
-        context: The Cloud Function's event metadata.
-            It has the following attributes:
-                `event_id`: the Pub/Sub message ID.
-                `timestamp`: the Pub/Sub message publish time.
-                `event_type`: for example: "google.pubsub.topic.publish".
-                `resource`: the resource that emitted the event.
-            This argument is not currently used in this function, but the argument is
-            required by Cloud Functions, which will call it.
+    This function is intended to be triggered by Pub/Sub messages, via Cloud Run.
     """
-    
-    #alert_dict = open_alert(msg["data"], load_schema="elasticc.v0_9.alert.avsc")
+    envelope = request.get_json()
 
+    # do some checks
+    if not envelope:
+        msg = "no Pub/Sub message received"
+        print(f"error: {msg}")
+        return f"Bad Request: {msg}", 400
+
+    if not isinstance(envelope, dict) or "message" not in envelope:
+        msg = "invalid Pub/Sub message format"
+        print(f"error: {msg}")
+        return f"Bad Request: {msg}", 400
+
+    # unpack the alert
+    msg = envelope["message"]
+
+    alert_dict = open_alert(msg["data"], load_schema="elasticc.v0_9.alert.avsc")
     a_ids = alert_ids.extract_ids(alert_dict=alert_dict)
     
-    # attrs = {
-    #     **msg["attributes"],
-    #     "brokerIngestTimestamp": datetime.strptime(msg["publish_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
-    #     id_keys.objectId: str(a_ids.objectId),
-    #     id_keys.sourceId: str(a_ids.sourceId),
-    # }
+    attrs = {
+        **msg["attributes"],
+        "brokerIngestTimestamp": datetime.strptime(msg["publish_time"].replace("Z","+00:00"), '%Y-%m-%dT%H:%M:%S.%f%z'),
+        id_keys.objectId: str(a_ids.objectId),
+        id_keys.sourceId: str(a_ids.sourceId),
+    }
 
     # classify
     #try:
@@ -95,7 +92,7 @@ def run(msg: dict, context) -> None:
     # if something goes wrong, let's just log it and exit gracefully
     # once we know more about what might go wrong, we can make this more specific
     #except Exception as e:
-    logger.log_text(f"Classify error: {e}", severity="WARNING")
+    #logger.log_text(f"Classify error: {e}", severity="WARNING")
 
     #else:
         # store in bigquery

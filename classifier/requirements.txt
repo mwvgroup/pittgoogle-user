@@ -1,7 +1,8 @@
 colorama
+Flask==2.0.1
 google-cloud-functions
 google-cloud-logging
-gunicorn
+gunicorn==20.1.0
 h5py
 natsort
 pgb-broker-utils==0.2.43
