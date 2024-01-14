@@ -4,6 +4,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '${_MODULE_IMAGE_NAME}', '.']
 # push the image to Container Registry
+# [TODO] Container Registry is deprecated. we should transition to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', '${_MODULE_IMAGE_NAME}']
 # deploy the image to Cloud Run
@@ -15,6 +16,10 @@ substitutions:
     _TESTID: 'testid'
     _MODULE_NAME: '${_SURVEY}-classifier-${_TESTID}'
     _MODULE_IMAGE_NAME: 'gcr.io/${PROJECT_ID}/${_MODULE_NAME}'
+    # cloud functions automatically sets the projectid env var using the name "GCP_PROJECT".
+    # use the same name here for consistency.
+    # [TODO] PROJECT_ID is set in setup.sh. this is confusing and we should revisit the decision.
+    # i (Raen) think i didn't make it a substitution because i didn't want to set a default for it.
     _ENV_VARS: 'GCP_PROJECT=${PROJECT_ID},SURVEY=${_SURVEY},TESTID=${_TESTID}'
     _REGION: 'us-central1'
 options:

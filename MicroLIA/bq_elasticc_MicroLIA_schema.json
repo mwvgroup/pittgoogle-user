@@ -1,0 +1,56 @@
+[
+    {
+      "description": "unique alert identifier",
+      "mode": "REQUIRED",
+      "name": "alertId",
+      "type": "INTEGER"
+    },
+    {
+      "description": "object identifier or name",
+      "mode": "REQUIRED",
+      "name": "diaObjectId",
+      "type": "INTEGER"
+    },
+    {
+      "description": "Candidate ID from operations DB",
+      "mode": "REQUIRED",
+      "name": "diaSourceId",
+      "type": "INTEGER"
+    },
+    {
+      "description": "probability object is a Cataclysmic Variable (CV) ",
+      "mode": "NULLABLE",
+      "name": "prob_class0",
+      "type": "FLOAT"
+    },
+    {
+      "description": "probability object is Long-period Pulsating Variable (LPV)",
+      "mode": "NULLABLE",
+      "name": "prob_class1",
+      "type": "FLOAT"
+    },
+    {
+      "description": "probability object is a Microlensing event (ML)",
+      "mode": "NULLABLE",
+      "name": "prob_class2",
+      "type": "FLOAT"
+    },
+    {
+      "description": "probability object is a RR Lyrae",
+      "mode": "NULLABLE",
+      "name": "prob_class3",
+      "type": "FLOAT"
+    },
+    {
+      "description": "predicted class; 0 = CV, 1 = LPV, 2 = ML, 3 = RR Lyrae",
+      "mode": "NULLABLE",
+      "name": "predicted_class",
+      "type": "INTEGER"
+    },
+    {
+      "description": "timestamp for testing",
+      "mode": "NULLABLE",
+      "name": "timestamp",
+      "type": "TIMESTAMP"
+    }
+  ]

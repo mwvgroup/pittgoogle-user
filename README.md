@@ -14,7 +14,7 @@ The deployment script in this repo can be used to create and delete some of the 
     * Used to store SuperNNova classifications
 
 ## How to use the deployment script
-* Begin a new terminal and confirm that your current directory is the same as the repo's root directory (i.e., pittgoogle-user).
+* Begin a new terminal and confirm that your current directory is the same as the classifier's root directory (e.g., pittgoogle-user/SuperNNova).
 * Initialize the following variables:
 
     ```

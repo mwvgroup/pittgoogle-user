@@ -1,6 +1,6 @@
 [
     {
-      "description": "unique alert identifer",
+      "description": "unique alert identifier",
       "mode": "REQUIRED",
       "name": "alertId",
       "type": "INTEGER"
