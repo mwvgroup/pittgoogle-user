@@ -87,11 +87,11 @@ else
     # ensure that we do not teardown production resources
     if [ "${testid}" != "False" ]; then
         echo "Removing BigQuery, Pub/Sub resources for Cloud Run..."
-        gcloud pubsub subscriptions delete "${ps_input_subscrip}" # needed to stop the Cloud Run module
-        gcloud pubsub topics delete "${ps_output_topic}"
-        bq rm --table "${bq_dataset}.${bq_table}"
-        bq rm --dataset=true "${bq_dataset}"
-        gcloud run services delete "${cr_module_name}" --region "${region}"
-        gcloud container images delete "${module_image_name}"
+        gcloud pubsub subscriptions delete "${ps_input_subscrip}" --quiet # needed to stop the Cloud Run module
+        gcloud pubsub topics delete "${ps_output_topic}" --quiet
+        bq rm --table "${bq_dataset}.${bq_table}" --quiet
+        bq rm --dataset=true "${bq_dataset}" --quiet
+        gcloud run services delete "${cr_module_name}" --region "${region}" --quiet
+        gcloud container images delete "${module_image_name}" --quiet
     fi
 fi
